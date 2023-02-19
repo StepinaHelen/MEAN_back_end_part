@@ -40,7 +40,7 @@ router.post("/auth", (req, res) => {
         });
         res.json({
           success: true,
-          token: "JWT" + token,
+          token: "JWT " + token,
           user: {
             id: user._id,
             name: user.name,
@@ -55,15 +55,8 @@ router.post("/auth", (req, res) => {
   });
 });
 
-// router.get(
-//   "/dashboard",
-//   passport.authenticate("jwt", { session: false }), //forbid access to the page
-//   (req, res) => {
-//     res.send("Dashboard!");
-//   }
-// );
 
-router.post("/dashboard", (req, res) => {
+router.post("/dashboard",  passport.authenticate("jwt", { session: false }), (req, res) => {
   const { title, category, photo, text, author, date } = req.body;
   let newPost = new Post({
     title,
@@ -74,13 +67,14 @@ router.post("/dashboard", (req, res) => {
     date,
   });
 
-  addPost.addPost(newPost, (err, post) => {
+  Post.addPost(newPost, (err, post) => {
     if (err) {
       res.json({ success: false, msg: "Post has not added." });
     } else {
       res.json({ success: true, msg: "Post has been added." });
     }
   });
+
 });
 
 module.exports = router;

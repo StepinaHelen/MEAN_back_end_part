@@ -6,7 +6,7 @@ var JwtStrategy = require("passport-jwt").Strategy,
 
 module.exports = function (passport) {
   var opts = {};
-  opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(); //тип авторизации
+  opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt'); //тип авторизации
   opts.secretOrKey = config.secret;
 
   passport.use(
