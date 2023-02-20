@@ -20,13 +20,19 @@ require("./config/passport")(passport); //call the function
 
 app.use(cors());
 app.use(bodyParser.json({ limit: "50mb" })); //get data from queries
-app.use(bodyParser.urlencoded({ limit: "50mb", extended:true, parameterLimi: 1000000 }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimi: 1000000,
+  })
+);
 
 mongoose.connect(config.db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
- //connect to database
+//connect to database
 mongoose.connection.on("connected", () => {
   console.log("Successfull connection to the database!)");
 });
@@ -40,26 +46,29 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  Post.find().then(   //get all post from db
-    posts => res.json(posts)
-  )
+  Post.find().then(
+    //get all post from db
+    (posts) => res.json(posts)
+  );
 });
 
-  app.get(
+app.get("/post/:id", (req, res) => {
+  const id = req.url.split("/")[2];
+  Post.findById(id).then((post) => res.json(post));
+});
+
+app.patch("/post/:id", (req, res) => {
+  const id = req.params.id;
+  Post.findByIdAndUpdate({ _id: id }, req.body).then((post) => res.json(post));
+});
+
+app.delete(
   "/post/:id",
-    (req, res) => {
-    const id = req.url.split('/')[2];
-    Post.findById(id).then(post => res.json(post))
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const id = req.url.split("/")[2];
+    Post.deleteOne({ _id: id }).then(() => res.json({ success: true }));
   }
 );
 
-  app.delete(
-    "/post/:id",
-     passport.authenticate("jwt", { session: false }),
-    (req, res) => {
-    const id = req.url.split('/')[2];
-      Post.deleteOne({_id:id}).then(() => res.json({success:true}));
-  }
-);
-
-app.use("/account", account);  //add routing
+app.use("/account", account); //add routing
