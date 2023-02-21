@@ -10,14 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "*",
-    "mongoose": "*",
     "bcrypt": "*",
-    "passport": "*",
-    "passport-jwt": "*",
     "body-parser": "*",
     "cors": "*",
+    "dotenv": "^16.0.3",
+    "express": "*",
+    "express-session": "*",
     "jsonwebtoken": "*",
-    "express-session": "*"
+    "mongoose": "*",
+    "passport": "*",
+    "passport-jwt": "*"
   }
 }
